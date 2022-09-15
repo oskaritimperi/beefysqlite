@@ -32,9 +32,16 @@ target_compile_definitions(beefysqlite PRIVATE
 
 target_link_libraries(beefysqlite PRIVATE zlibstatic)
 
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads)
+if(TARGET Threads::Threads)
+    target_link_libraries(beefysqlite PRIVATE Threads::Threads)
+endif()
+
 if(WIN32)
     target_compile_definitions(beefysqlite PRIVATE HTTP_BACKEND_WINHTTP)
     target_link_libraries(beefysqlite PRIVATE winhttp)
 else()
     target_compile_definitions(beefysqlite PRIVATE HTTP_BACKEND_CURL)
+    target_link_libraries(beefysqlite PRIVATE ${CMAKE_DL_LIBS} m)
 endif()
